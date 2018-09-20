@@ -4,9 +4,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var taskRouter = require('./routes/task');
+var indexRouter = require('./routes/index.route');
+var usersRouter = require('./routes/users.route');
+var taskRouter = require('./routes/task.route');
+var authRouter = require('./routes/auth.route');
+var verifyToken = require('./config/auth.helper');
+
 
 // db connection 
 // mongodb://<dbuser>:<dbpassword>@ds163842.mlab.com:63842/sprint-schedule
@@ -16,6 +19,7 @@ mongoose.connect('mongodb://sprint-schedule:sprint1234@ds163842.mlab.com:63842/s
     console.log('connect successfully')
   }).catch((error) => {
     console.log(error);
+    throw error;
   })
 var app = express();
 
@@ -29,8 +33,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 app.use('/users', usersRouter);
-app.use('/task', taskRouter);
+app.use('/task', verifyToken, taskRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

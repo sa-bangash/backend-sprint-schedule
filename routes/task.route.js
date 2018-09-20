@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var jwt = require('jsonwebtoken');
 var TaskModel = require('../models/task.model');
 /* GET Task listing. */
 router.get('/:id', function (req, res, next) {
