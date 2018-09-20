@@ -21,8 +21,10 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    TaskModel.find({}, function (errors, task) {
-        res.send(task.map((item) => item.toClient()));
+    TaskModel.find({}).then(function (resp) {
+        res.send(resp)
+    }).catch(function (errors) {
+        res.error(errors);
     })
 })
 

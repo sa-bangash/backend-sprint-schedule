@@ -11,7 +11,7 @@ var taskRouter = require('./routes/task');
 // db connection 
 // mongodb://<dbuser>:<dbpassword>@ds163842.mlab.com:63842/sprint-schedule
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://sprint-schedule:sprint1234@ds163842.mlab.com:63842/sprint-schedule')
+mongoose.connect('mongodb://sprint-schedule:sprint1234@ds163842.mlab.com:63842/sprint-schedule', { useNewUrlParser: true })
   .then((resp) => {
     console.log('connect successfully')
   }).catch((error) => {
