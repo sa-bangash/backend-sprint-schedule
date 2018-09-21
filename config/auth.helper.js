@@ -1,5 +1,5 @@
 var jwt = require('jsonwebtoken');
-module.exports = function verifyToken(req, res, next) {
+function verifyToken(req, res, next) {
     const basicAuthHeader = req.headers['authorization'];
     if (typeof basicAuthHeader !== 'undefined') {
         const tokenStr = basicAuthHeader.split(' ');
@@ -14,4 +14,13 @@ module.exports = function verifyToken(req, res, next) {
     } else {
         res.sendStatus(403);
     }
+}
+
+function generateToken(user) {
+    return jwt.sign(user, 'sc');
+}
+
+module.exports = {
+    verifyToken: verifyToken,
+    generateToken: generateToken,
 }

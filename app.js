@@ -8,18 +8,18 @@ var indexRouter = require('./routes/index.route');
 var usersRouter = require('./routes/users.route');
 var taskRouter = require('./routes/task.route');
 var authRouter = require('./routes/auth.route');
-var verifyToken = require('./config/auth.helper');
+var verifyToken = require('./config/auth.helper').verifyToken;
 
 
 // db connection 
-// mongodb://<dbuser>:<dbpassword>@ds163842.mlab.com:63842/sprint-schedule
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://sprint-schedule:sprint1234@ds163842.mlab.com:63842/sprint-schedule', { useNewUrlParser: true })
+
+mongoose.connect('mongodb://sprint-schedule:sprint1234@ds163842.mlab.com:63842/sprint-schedule',
+  { useNewUrlParser: true })
   .then((resp) => {
     console.log('connect successfully')
   }).catch((error) => {
-    console.log(error);
-    throw error;
+    console.log('error occuer', error);
   })
 var app = express();
 
