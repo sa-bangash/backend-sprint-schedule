@@ -9,13 +9,14 @@ authRouter.post('/login', function (req, res, next) {
     UserModel.findOne({ email: req.body.email })
         .then((resp) => {
             if (resp && req.body.password === resp.password) {
-                return generateToken(req.body)
+                res.json({
+                    token: generateToken(req.body),
+                    name: resp.name,
+                    email: resp.email,
+                });
             } else {
-                res.send('You have Invalid email or password');
+                res.status(403).send('You have Invalid email or password');
             }
-        })
-        .then((resp) => {
-            res.json({ token: resp });
         })
         .catch((err) => res.error(err))
 })
@@ -25,10 +26,11 @@ authRouter.post('/signup', function (req, res, next) {
         ...req.body,
     })
     newUser.save().then(function (resp) {
-        return generateToken(req.body)
-    }).then(function (resp) {
-        res.setHeader('Authurization', `basic ${resp}`)
-        res.send({ token: resp });
+        res.json({
+            token: generateToken(req.body),
+            name: resp.name,
+            email: resp.email,
+        });
     }).catch(function (err) {
         res.status(403).send(err);
     })
