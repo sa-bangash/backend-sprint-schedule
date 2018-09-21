@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var taskSchema = new Schema({
-    storyNumber: String,
+    storyNumber: { type: String, required: true },
     description: String,
-    estimatedTime: Number,
+    estimatedTime: { type: Number, required: true },
     status: Boolean,
 })
 

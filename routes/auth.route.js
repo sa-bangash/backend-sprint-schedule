@@ -21,7 +21,6 @@ authRouter.post('/login', function (req, res, next) {
 })
 
 authRouter.post('/signup', function (req, res, next) {
-    console.log(req.body);
     var newUser = new UserModel({
         ...req.body,
     })
@@ -29,9 +28,9 @@ authRouter.post('/signup', function (req, res, next) {
         return generateToken(req.body)
     }).then(function (resp) {
         res.setHeader('Authurization', `basic ${resp}`)
-        res.send(resp);
+        res.send({ token: resp });
     }).catch(function (err) {
-        res.send(err);
+        res.status(403).send(err);
     })
 })
 
