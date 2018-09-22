@@ -22,7 +22,7 @@ router.post('/', function (req, res, next) {
 
 router.get('/', function (req, res, next) {
     TaskModel.find({}).then(function (resp) {
-        res.send(resp)
+        res.json(resp)
     }).catch(function (errors) {
         res.error(errors);
     })

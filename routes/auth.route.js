@@ -18,7 +18,7 @@ authRouter.post('/login', function (req, res, next) {
                 res.status(403).send('You have Invalid email or password');
             }
         })
-        .catch((err) => res.error(err))
+        .catch((err) => res.status(403).send(err))
 })
 
 authRouter.post('/signup', function (req, res, next) {

@@ -8,11 +8,11 @@ function verifyToken(req, res, next) {
             if (!err) {
                 next();
             } else {
-                res.sendStatus(403)
+                res.sendStatus(405)
             }
         })
     } else {
-        res.sendStatus(403);
+        res.sendStatus(405);
     }
 }
 
