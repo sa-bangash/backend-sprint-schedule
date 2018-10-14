@@ -1,18 +1,23 @@
 var jwt = require('jsonwebtoken');
+
+
 function verifyToken(req, res, next) {
     const basicAuthHeader = req.headers['authorization'];
+    console.log(typeof basicAuthHeader);
     if (typeof basicAuthHeader !== 'undefined') {
         const tokenStr = basicAuthHeader.split(' ');
         const token = tokenStr[1];
+
         jwt.verify(token, 'sc', function (err, authData) {
             if (!err) {
                 next();
             } else {
-                res.sendStatus(405)
+                res.status(403).send("You are not allowed");
             }
         })
     } else {
-        res.sendStatus(405);
+
+        res.status(403).send("You are not allowed");
     }
 }
 

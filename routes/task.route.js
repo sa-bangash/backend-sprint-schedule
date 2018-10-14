@@ -9,7 +9,6 @@ router.get('/:id', function (req, res, next) {
     })
 })
 router.post('/', function (req, res, next) {
-    console.log(req.body)
     var newTask = new TaskModel(req.body)
 
     newTask.save((error, resp) => {

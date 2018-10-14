@@ -10,6 +10,8 @@ var taskRouter = require('./routes/task.route');
 var authRouter = require('./routes/auth.route');
 var verifyToken = require('./config/auth.helper').verifyToken;
 
+//CORS
+var cors = require('cors');
 
 // db connection 
 var mongoose = require('mongoose');
@@ -34,12 +36,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
 
 // Allow cros
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,PUT,DELETE,POST");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
