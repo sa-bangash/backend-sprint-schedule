@@ -10,7 +10,7 @@ authRouter.post('/login', function (req, res, next) {
         .then((resp) => {
             if (resp && req.body.password === resp.password) {
                 res.json({
-                    token: generateToken(JSON.stringify(resp)),
+                    token: generateToken(resp.toClient()),
                     name: resp.name,
                     email: resp.email,
                 });
@@ -26,8 +26,9 @@ authRouter.post('/signup', function (req, res, next) {
         ...req.body,
     })
     newUser.save().then(function (resp) {
+        console.log(resp.toClient())
         res.json({
-            token: generateToken(req.body),
+            token: generateToken(resp.toClient()),
             name: resp.name,
             email: resp.email,
         });

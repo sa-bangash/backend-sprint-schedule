@@ -12,7 +12,7 @@ router.get('/:id', function (req, res, next) {
     })
 })
 router.post('/', function (req, res, next) {
-    var newTask = new TaskModel({ ...req.body,userId:req.user._id})
+    var newTask = new TaskModel({ ...req.body, user: req.user })
     console.log(decoredToken(req));
     newTask.save((error, resp) => {
         if (error) {
@@ -24,7 +24,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    TaskModel.find({userId:req.user._id}).then(function (resp) {
+    TaskModel.find({ 'user._id': req.user._id }).then(function (resp) {
         res.json(resp)
     }).catch(function (errors) {
         res.error(errors);
@@ -34,6 +34,14 @@ router.get('/', function (req, res, next) {
 router.delete('/:id', function (req, res, next) {
     TaskModel.deleteOne({ _id: req.params.id }, function (errors, task) {
         res.send(task);
+    })
+})
+
+router.delete('/all', function (req, res, next) {
+    TaskModel.find({}).then(function (errors, task) {
+        res.json(task);
+    }).catch((err) => {
+        res.error(err)
     })
 })
 

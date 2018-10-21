@@ -1,8 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var UserSchema = new Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+})
 var taskSchema = new Schema({
-    userId: {type:Schema.Types.ObjectId,ref:'User'},
+    user: UserSchema,
     storyNumber: { type: String },
     description: { type: String, required: [true, 'Description is required'] },
     estimatedTime: { type: String, required: [true, 'Estimated Time is required'] },
