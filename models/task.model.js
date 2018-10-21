@@ -4,7 +4,8 @@ var Schema = mongoose.Schema;
 var taskSchema = new Schema({
     storyNumber: { type: String },
     description: { type: String, required: [true, 'Description is required'] },
-    estimatedTime: { type: String, required: [true,'Estimated Time is required'] },
+    estimatedTime: { type: String, required: [true, 'Estimated Time is required'] },
+    date: { type: String, required: [true, 'Date is Required'] },
     status: Boolean,
 })
 
