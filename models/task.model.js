@@ -12,6 +12,7 @@ var taskSchema = new Schema({
     estimatedTime: { type: String, required: [true, 'Estimated Time is required'] },
     date: { type: String, required: [true, 'Date is Required'] },
     status: Boolean,
+    sprintId: { type: Schema.Types.ObjectId, required: [true, 'Sprint id is requried'] },
 })
 
 taskSchema.method('toClient', function () {
