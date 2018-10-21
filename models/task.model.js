@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var taskSchema = new Schema({
+    userId: {type:Schema.Types.ObjectId,ref:'User'},
     storyNumber: { type: String },
     description: { type: String, required: [true, 'Description is required'] },
     estimatedTime: { type: String, required: [true, 'Estimated Time is required'] },

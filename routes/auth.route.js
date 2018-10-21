@@ -1,7 +1,7 @@
 var express = require('express');
 var authRouter = express.Router();
 var jwt = require('jsonwebtoken');
-var UserModel = require('../models/user.model');
+var UserModel = require('../models/user.model').UserModel;
 
 var generateToken = require('../config/auth.helper').generateToken;
 
@@ -10,7 +10,7 @@ authRouter.post('/login', function (req, res, next) {
         .then((resp) => {
             if (resp && req.body.password === resp.password) {
                 res.json({
-                    token: generateToken(req.body),
+                    token: generateToken(JSON.stringify(resp)),
                     name: resp.name,
                     email: resp.email,
                 });

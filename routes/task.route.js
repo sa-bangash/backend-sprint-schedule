@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken');
 var TaskModel = require('../models/task.model');
 
 var validationMessage = require('../gernal/helper').validationMessage;
+var decoredToken = require('../config/auth.helper').decoredToken;
 /* GET Task listing. */
 router.get('/:id', function (req, res, next) {
     TaskModel.findById(req.params.id).then((resp) => {
@@ -11,8 +12,8 @@ router.get('/:id', function (req, res, next) {
     })
 })
 router.post('/', function (req, res, next) {
-    var newTask = new TaskModel(req.body)
-    console.log(newTask);
+    var newTask = new TaskModel({ ...req.body,userId:req.user._id})
+    console.log(decoredToken(req));
     newTask.save((error, resp) => {
         if (error) {
             res.status(406).send(validationMessage(error.errors));
@@ -23,7 +24,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/', function (req, res, next) {
-    TaskModel.find({}).then(function (resp) {
+    TaskModel.find({userId:req.user._id}).then(function (resp) {
         res.json(resp)
     }).catch(function (errors) {
         res.error(errors);
