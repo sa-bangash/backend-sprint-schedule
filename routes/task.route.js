@@ -34,6 +34,12 @@ router.post('/sprint', function (req, res, next) {
     }).catch((err) => res.status(406).json(validationMessage(err.errors)))
 })
 
+router.get('/sprint', function (req, res, next) {
+    Sprint.find().then((resp) => {
+        res.json(resp)
+    })
+})
+
 router.get('/:id', function (req, res, next) {
     TaskModel.findById(req.params.id).then((resp) => {
         res.send(resp.toClient());
