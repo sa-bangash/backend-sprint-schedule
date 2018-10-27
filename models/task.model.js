@@ -13,7 +13,7 @@ var taskSchema = new Schema({
     description: { type: String, required: [true, 'Description is required'] },
     estimatedTime: { type: String, required: [true, 'Estimated Time is required'] },
     date: {
-        type: String,
+        type: Number,
         required: [true, 'Date is Required'],
         validate: {
             isAsync: true,
