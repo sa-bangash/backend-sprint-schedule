@@ -9,7 +9,6 @@ var decoredToken = require('../config/auth.helper').decoredToken;
 
 router.post('/', function (req, res, next) {
     var newTask = new TaskModel({ ...req.body, user: req.user })
-    console.log(decoredToken(req));
     newTask.save((error, resp) => {
         if (error) {
             res.status(406).send(validationMessage(error.errors));
@@ -20,7 +19,7 @@ router.post('/', function (req, res, next) {
 });
 
 router.get('/all', function (req, res, next) {
-    TaskModel.find().then(function (task) {
+    TaskModel.find().populate('sprintId').then(function (task) {
         res.json(task);
     }).catch(function (err) {
         res.status(500).send(err)
