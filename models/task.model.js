@@ -23,9 +23,9 @@ var taskSchema = new Schema({
                         const start = moment(value.start);
                         const end = moment(value.end);
                         const date = moment(v);
-                        if (date.isBetween(start, end,'d','[]')) {
+                        if (date.isBetween(start, end, 'd', '[]')) {
                             cb(true);
-                        }else{
+                        } else {
                             cb(false);
                         }
                     }).catch(function (err) {
@@ -46,6 +46,8 @@ var taskSchema = new Schema({
                 Sprint.findOne({ _id: v }, function (err, doc) {
                     if (err || !doc) {
                         cb(false)
+                    } else if (doc.end < new Date().getTime()) {
+                        cb(false,'Not allowed to add in past sprint');
                     } else {
                         cb(true)
                     }
