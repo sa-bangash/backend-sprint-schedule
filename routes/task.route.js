@@ -45,6 +45,12 @@ router.get('/:id', function (req, res, next) {
     })
 })
 
+router.delete('/:id', function (req, res, next) {
+    TaskModel.findOneAndDelete(req.params.id).then((resp) => {
+        res.send(resp.toClient());
+    })
+})
+
 router.get('/', function (req, res, next) {
     TaskModel.find({ 'user._id': req.user._id }).then(function (resp) {
         res.json(resp)
