@@ -7,6 +7,10 @@ var UserSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
 })
+var StatusSchema = new Schema({
+    id: { type: Number, required: true },
+    display: { type: String, required: true }
+})
 var taskSchema = new Schema({
     user: UserSchema,
     storyNumber: { type: String },
@@ -36,7 +40,8 @@ var taskSchema = new Schema({
             message: 'Date should be exsit within Sprint date',
         }
     },
-    status: Boolean,
+    // 1:for todo, 2:for in progress, 3:for done
+    status: { type: StatusSchema, required: [true, 'Status Is Required'], default: { id: 1, display: 'To Do' } },
     sprintId: {
         type: Schema.Types.ObjectId, ref: 'sprint',
         required: [true, 'Sprint id is required'],
@@ -47,7 +52,7 @@ var taskSchema = new Schema({
                     if (err || !doc) {
                         cb(false)
                     } else if (doc.end < new Date().getTime()) {
-                        cb(false,'Not allowed to add in past sprint');
+                        cb(false, 'Not allowed to add in past sprint');
                     } else {
                         cb(true)
                     }

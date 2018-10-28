@@ -5,6 +5,7 @@ var TaskModel = require('../models/task.model');
 var Sprint = require('../models/sprint.model').SprintModel;
 var validationMessage = require('../gernal/helper').validationMessage;
 var decoredToken = require('../config/auth.helper').decoredToken;
+var STATUS = require('../gernal/constant').STATUS;
 /* GET Task listing. */
 
 router.post('/', function (req, res, next) {
@@ -39,6 +40,18 @@ router.get('/sprint', function (req, res, next) {
     })
 })
 
+router.get('/status', function (req, res, next) {
+    res.json(STATUS)
+})
+router.put('/:id/status', function (req, res, next) {
+
+    TaskModel.findByIdAndUpdate(req.params.id, { $set: { status: req.body.status } }, { new: true }, function (err, data) {
+        if (!err) {
+            return res.json(data);
+        }
+        res.status(406).send(err);
+    })
+})
 router.get('/:id', function (req, res, next) {
     TaskModel.findById(req.params.id).then((resp) => {
         res.send(resp.toClient());
