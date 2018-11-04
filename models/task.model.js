@@ -69,7 +69,7 @@ taskSchema.method('toClient', function () {
     delete obj._id;
     return obj;
 })
-var taskModel = mongoose.model('Task', taskSchema);
+var taskModel = mongoose.model('task', taskSchema);
 
 
 module.exports = taskModel;

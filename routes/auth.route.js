@@ -1,10 +1,10 @@
 var express = require('express');
 var authRouter = express.Router();
 var jwt = require('jsonwebtoken');
-var UserModel = require('../models/user.model').UserModel;
+var { UserModel, USER_ROLE } = require('../models/user.model');
 var validationMessage = require('../gernal/helper').validationMessage;
 var generateToken = require('../config/auth.helper').generateToken;
-
+var WorkSpaceModal = require('../models/workspace.model').WorkSpaceModal;
 authRouter.post('/login', function (req, res, next) {
     UserModel.findOne({ email: req.body.email })
         .then((resp) => {
@@ -40,7 +40,8 @@ authRouter.post('/signup', function (req, res, next) {
 })
 
 authRouter.post('/create-work-space', function (req, res, next) {
-    if (req.body && !req.body.workSpace) {
+    const workSpaceName = req.body.workSpace;
+    if (req.body && !workSpaceName) {
         return res.status(406).json({
             workSpace: 'Work space is Required',
         })
@@ -48,18 +49,40 @@ authRouter.post('/create-work-space', function (req, res, next) {
     var newUser = new UserModel({
         ...req.body,
     });
-    newUser.save().then(function (resp) {
-        res.json({
-            token: generateToken(resp.toClient()),
-            name: resp.name,
-            email: resp.email,
-            createWorkSpace: res.createWorkSpace,
+    WorkSpaceModal.findOne({ name: workSpaceName })
+        .then(function (resp) {
+            if (!resp) {
+                return true;
+            }
+            throw { workSpace: 'Work space is already Exsit' }
+        }).then(function () {
+            return newUser.save()
+        }).then(function (resp) {
+            const newWorkSpace = new WorkSpaceModal({
+                name: workSpaceName,
+                users: [{
+                    id: resp._id,
+                    role: [USER_ROLE.Admin]
+                }]
+            })
+            return newWorkSpace.save().then((wkSpace) => {
+                return {
+                    workSpace: wkSpace,
+                    user:resp.toClient()
+                }
+            })
+        }).then(function (resp) {
+            res.json({
+                token: generateToken(resp),
+                ...resp
+            })
+        }).catch(function (err) {
+            console.log(err)
+            if (err.errors) {
+                return res.status(406).json(validationMessage(err.errors));
+            }
+            return res.status(406).json(err);
         })
-    }).catch(function (err) {
-        console.log(err)
-
-        res.status(406).json(validationMessage(err.errors));
-    })
 })
 
 module.exports = authRouter;

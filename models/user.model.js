@@ -1,6 +1,16 @@
 var mongoose = require('mongoose');
-
 var Schema = mongoose.Schema;
+
+const USER_ROLE = Object.freeze({
+    Admin: 'Admin',
+    Dispacher: 'Dispacher',
+    BackendDev: 'BackendDev',
+    FrondendDev: 'FrontendDev',
+    FrondendDesigner: 'FrontendDesigner',
+    UxUi: 'UxUi',
+    FullStackDev: 'FullStackDev',
+    QA: 'QA',
+})
 
 var UserSchema = new Schema({
     name: { type: String, required: [true, 'Name is required'] },
@@ -23,24 +33,13 @@ var UserSchema = new Schema({
         }
     },
     password: { type: String, required: [true, 'Password is required'] },
-    workSpace: {
-        type: String,
-        validate: {
-            isAsync: true,
-            validator: function (v, cb) {
-                this.model('User').findOne({ workSpace: v }, function (err, doc) {
-                    console.log(doc);
-                    if (err || doc) {
-                        cb(false)
-                    } else {
-                        cb(true);
-                    }
+})
 
-                })
-            },
-            message: 'Work space Already Exsit'
-        }
-    }
+UserSchema.virtual('workspace', {
+    ref: 'workspace',
+    localField: '_id',
+    foreignField: 'users.id'
+
 })
 
 UserSchema.method('toClient', function () {
@@ -48,6 +47,8 @@ UserSchema.method('toClient', function () {
     delete obj.password;
     return obj;
 })
-exports.UserSchema = UserSchema;
 
+// exprots
+exports.UserSchema = UserSchema;
+exports.USER_ROLE = USER_ROLE;
 exports.UserModel = mongoose.model('User', UserSchema);
