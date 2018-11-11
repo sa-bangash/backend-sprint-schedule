@@ -9,7 +9,15 @@ var usersRouter = require('./routes/users.route');
 var taskRouter = require('./routes/task.route');
 var authRouter = require('./routes/auth.route');
 var verifyToken = require('./config/auth.helper').verifyToken;
-
+var sequelize = require('./models');
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('-----------Connection has been established successfully-----------------');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 //CORS
 var cors = require('cors');
 
@@ -40,8 +48,8 @@ app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
-app.use('/users', usersRouter);
-app.use('/task', verifyToken, taskRouter);
+// app.use('/users', usersRouter);
+// app.use('/task', verifyToken, taskRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

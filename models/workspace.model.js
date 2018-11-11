@@ -1,40 +1,19 @@
-var mongoose = require('mongoose');
 
-var Schema = mongoose.Schema;
-var USER_ROLES = require('./user.model').USER_ROLE;
-var UserSchema = require('./user.model').UserSchema;
-var RoleSchema = new Schema({
-    id: { type: Schema.Types.ObjectId, require: true, ref: 'user' },
-    role: [{
-        type: String,
-        enum: Object.values(USER_ROLES),
-    }]
-})
-var WorkSpaceSchema = new Schema({
+var Sequelize = require('sequelize');
+var sequelize = require('./index');
+var UserModal = require('./user.model');
+var WorkSpace = sequelize.define('work-space', {
     name: {
-        type: String,
-        required: true,
+        type: Sequelize.STRING,
+        allowNull: false,
         validate: {
-            isAsync: true,
-            validator: function (v, cb) {
-                this.model('workspace').findOne({ name: v }, function (err, doc) {
-                    console.log(doc);
-                    if (err || doc) {
-                        cb(false)
-                    } else {
-                        cb(true);
-                    }
-
-                })
-            },
-            message: 'Work space Already Exsit'
+            notEmpty: {
+                msg: 'name is required'
+            }
         }
     },
-    users: [{
-        type: RoleSchema
-    }]
-})
-module.exports = {
-    WorkSpaceSchema,
-    WorkSpaceModal: mongoose.model('workspace', WorkSpaceSchema)
-}
+});
+WorkSpace.belongsTo(UserModal);
+// exprots
+WorkSpace.sync();
+module.exports = WorkSpace;

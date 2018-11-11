@@ -1,54 +1,35 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
-const USER_ROLE = Object.freeze({
-    Admin: 'Admin',
-    Dispacher: 'Dispacher',
-    BackendDev: 'BackendDev',
-    FrondendDev: 'FrontendDev',
-    FrondendDesigner: 'FrontendDesigner',
-    UxUi: 'UxUi',
-    FullStackDev: 'FullStackDev',
-    QA: 'QA',
-})
+var Sequelize = require('sequelize');
+var sequelize = require('./index');
 
-var UserSchema = new Schema({
-    name: { type: String, required: [true, 'Name is required'] },
-    email: {
-        type: String, required: [true, 'Email is required'],
+var User = sequelize.define('user', {
+    name: {
+        type: Sequelize.STRING,
+        allowNull: false,
         validate: {
-            isAsync: true,
-            validator: function (v, cb) {
-                this.model('User').findOne({ email: v }, function (err, doc) {
-                    console.log(doc);
-                    if (err || doc) {
-                        cb(false)
-                    } else {
-                        cb(true);
-                    }
-
-                })
-            },
-            message: 'Email Already Exsit'
+            notEmpty: {
+                msg: 'name is required'
+            }
         }
     },
-    password: { type: String, required: [true, 'Password is required'] },
-})
-
-UserSchema.virtual('workspace', {
-    ref: 'workspace',
-    localField: '_id',
-    foreignField: 'users.id'
-
-})
-
-UserSchema.method('toClient', function () {
-    const obj = this.toObject();
-    delete obj.password;
-    return obj;
-})
-
+    email: {
+        allowNull: false,
+        unique: { args: true, msg: 'Email already in user' },
+        type: Sequelize.STRING,
+        validate: {
+            isEmail: { args: true, msg: 'Invalid email' },
+        }
+    },
+    password: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+            notEmpty: {
+                msg: 'Password is required'
+            }
+        }
+    },
+});
+User.sync();
 // exprots
-exports.UserSchema = UserSchema;
-exports.USER_ROLE = USER_ROLE;
-exports.UserModel = mongoose.model('User', UserSchema);
+module.exports = User;
