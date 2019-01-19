@@ -1,18 +1,22 @@
 var express = require('express');
 var authRouter = express.Router();
 var jwt = require('jsonwebtoken');
-var UserModel = require('../models/user.model');
+var { User } = require('../models');
 var { validationMessage, getCustomErrorObj } = require('../gernal/helper');
 var generateToken = require('../config/auth.helper').generateToken;
 var WorkSpaceModal = require('../models/workspace.model');
 var Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+
+
+// const Op = Sequelize.Op;
 authRouter.post('/login', function (req, res, next) {
-    UserModel.findOne({ email: req.body.email })
+    User.findOne({ email: req.body.email })
         .then((resp) => {
             if (resp && req.body.password === resp.password) {
+                const data = resp.toClient();
+                const token = generateToken(data);
                 res.json({
-                    token: generateToken(resp.toClient()),
+                    token,
                     name: resp.name,
                     email: resp.email,
                 });
@@ -26,14 +30,14 @@ authRouter.post('/login', function (req, res, next) {
 })
 
 authRouter.post('/signup', function (req, res, next) {
-    UserModel.create({
+    User.create({
         ...req.body,
     }).then(function (resp) {
         const respObj = resp.toJSON();
         delete respObj.password;
-
+        const token = generateToken(respObj)
         res.json({
-            token: generateToken(resp),
+            token,
             ...respObj
         });
     }).catch(function (err) {
@@ -54,7 +58,7 @@ authRouter.post('/create-work-space', function (req, res, next) {
         }
     }).then((resp) => {
         if (!resp) {
-            return UserModel.create(
+            return User.create(
                 req.body,
             )
         }
@@ -75,7 +79,7 @@ authRouter.post('/create-work-space', function (req, res, next) {
         }
         res.send('some thing going wrong')
     }).catch((err) => {
-  
+
         res.status(406).send(validationMessage(err))
     })
 })

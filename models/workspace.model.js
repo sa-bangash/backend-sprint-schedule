@@ -1,19 +1,19 @@
 
-var Sequelize = require('sequelize');
-var sequelize = require('./index');
-var UserModal = require('./user.model');
-var WorkSpace = sequelize.define('work-space', {
-    name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: {
-                msg: 'name is required'
+module.exports = function (sequelize, Sequelize) {
+    var Workspace = sequelize.define('workspace', {
+        name: {
+            type: Sequelize.STRING,
+            allowNull: false,
+            validate: {
+                notEmpty: {
+                    msg: 'name is required'
+                }
             }
-        }
-    },
-});
-WorkSpace.belongsTo(UserModal);
-// exprots
-WorkSpace.sync();
-module.exports = WorkSpace;
+        },
+    });
+    Workspace.associate = function (models) {
+        Workspace.belongsTo(models.User)
+    }
+    return Workspace;
+}
+

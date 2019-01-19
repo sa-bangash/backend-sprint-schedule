@@ -9,11 +9,12 @@ var usersRouter = require('./routes/users.route');
 var taskRouter = require('./routes/task.route');
 var authRouter = require('./routes/auth.route');
 var verifyToken = require('./config/auth.helper').verifyToken;
-var sequelize = require('./models');
-sequelize
+var db = require('./models');
+db.sequelize
   .authenticate()
   .then(() => {
     console.log('-----------Connection has been established successfully-----------------');
+    
   })
   .catch(err => {
     console.error('Unable to connect to the database:', err);
